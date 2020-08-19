@@ -1,0 +1,46 @@
+-- Copyright (c) 2020, Digital Asset (Switzerland) GmbH and/or its affiliates.
+-- SPDX-License-Identifier: Apache-2.0
+
+daml 1.2
+
+module SlackIntegration.OutboundMessage where
+
+
+template OutboundMessage
+  with
+    integrationParty : Party
+    slackChannel     : Text
+    messageText      : Text
+    attemptCount     : Int
+  where
+    signatory integrationParty
+
+    controller integrationParty can
+        OutboundMessage_Retry : ContractId OutboundMessage
+           do
+             create this with
+               attemptCount = attemptCount + 1
+
+template OutboundMessageChannel
+  with
+    integrationParty : Party
+    sender           : Party
+    channelName      : Text
+    slackChannel     : Text
+  where
+    signatory integrationParty
+
+    key (integrationParty, channelName) : (Party, Text)
+    maintainer key._1
+
+    controller sender can
+        nonconsuming OutboundMessageChannel_SendMessage : ContractId OutboundMessage
+            with
+               messageText: Text
+            do
+              create OutboundMessage with
+                integrationParty
+                slackChannel
+                messageText
+                attemptCount = 0
+

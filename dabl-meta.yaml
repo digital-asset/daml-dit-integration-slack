@@ -1,0 +1,33 @@
+## Copyright (c) 2020, Digital Asset (Switzerland) GmbH and/or its affiliates.
+## SPDX-License-Identifier: Apache-2.0
+
+catalog:
+    name: dabl-integration-slack
+    group_id: com.digitalasset
+    version: 0.5.1
+    short_description: Slack Integration
+    description: Slack Send and Receive
+    release_date: 2020-08-13
+    author: Digital Asset (Switzerland) GmbH
+    license: Apache-2.0
+    tags: [ integration ]
+subdeployments:
+    - dabl-integration-slack.dar
+integration_types:
+    - id: com.projectdabl.integrations.slack_receive_dm
+      name: Slack Receive Direct Message
+      description: Allows direct messages sent to a Slack application to be recorded on a ledger.
+      entrypoint: core_int.integration_slack_receive_dm:integration_slack_receive_dm_main
+      runtime: python-direct
+      fields: []
+    - id: com.projectdabl.integrations.slack_send_message
+      name: Slack Send Message
+      description: Allows outbound messages recorded on a ledger to be sent to Slack
+      entrypoint: core_int.integration_slack_send_message:integration_slack_send_main
+      env_class: core_int.integration_slack_send_message:IntegrationSlackSendMessageEnv
+      runtime: python-direct
+      fields:
+        - id: slackApiToken
+          name: Slack API Token
+          description: Access token provided by Slack for authentication against their API
+          field_type: text

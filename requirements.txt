@@ -1,0 +1,4 @@
+../lib/PyYAML-5.3.1.tar.gz
+daml-dit-api==0.0.8
+dazl==7.0.2
+slackclient==2.7.3

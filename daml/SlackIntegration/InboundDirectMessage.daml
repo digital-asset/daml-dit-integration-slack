@@ -1,0 +1,16 @@
+-- Copyright (c) 2020, Digital Asset (Switzerland) GmbH and/or its affiliates.
+-- SPDX-License-Identifier: Apache-2.0
+
+daml 1.2
+
+module SlackIntegration.InboundDirectMessage where
+
+
+template InboundDirectMessage
+  with
+    integrationParty : Party
+    slackChannel     : Text
+    slackUser        : Text
+    messageText      : Text
+  where
+    signatory integrationParty
