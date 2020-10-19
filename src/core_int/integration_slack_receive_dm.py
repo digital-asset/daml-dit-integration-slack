@@ -9,11 +9,10 @@ from dazl import create
 from dazl.model.core import ContractData
 from slack import WebClient
 
-from daml_dit_api.main.web import \
-    json_response
-
 from daml_dit_api import \
     IntegrationEnvironment, IntegrationEvents, IntegrationWebhookResponse
+
+from daml_dit_if.main.web import json_response
 
 
 LOG = logging.getLogger('integration')
