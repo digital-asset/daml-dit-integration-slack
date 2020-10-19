@@ -11,8 +11,6 @@ catalog:
     license: Apache-2.0
     tags: [ integration ]
     icon_file: slack-icon.svg
-subdeployments:
-    - dabl-integration-slack.dar
 integration_types:
     - id: com.projectdabl.integrations.slack_receive_dm
       name: Slack Receive Direct Message
