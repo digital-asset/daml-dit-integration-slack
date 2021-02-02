@@ -4,6 +4,6 @@ yarl==1.5.1
 multidict==4.7.6
 idna==2.10
 chardet==3.0.4
-daml_dit_api==0.3.1
-daml_dit_if==0.3.1
+daml_dit_api==0.3.3
+daml_dit_if==0.3.4
 slackclient==2.9.2
