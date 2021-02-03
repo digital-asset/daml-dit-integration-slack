@@ -9,7 +9,7 @@ from dazl import exercise
 from dazl.model.core import ContractData
 from slack import WebClient
 
-from daml_dit_api import \
+from daml_dit_if.api import \
     IntegrationEnvironment, IntegrationEvents
 
 from daml_dit_if.main.web import json_response

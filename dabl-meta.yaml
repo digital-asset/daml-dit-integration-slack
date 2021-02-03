@@ -1,16 +1,17 @@
-## Copyright (c) 2020, Digital Asset (Switzerland) GmbH and/or its affiliates.
+## Copyright (c) 2020-2021, Digital Asset (Switzerland) GmbH and/or its affiliates.
 ## SPDX-License-Identifier: Apache-2.0
 
 catalog:
     name: dabl-integration-slack
     group_id: com.digitalasset
-    version: 0.6.0
+    version: 0.6.6
     short_description: Slack
-    description: Slack Send and Receive
+    description: Send and receive messages via Slack
     author: Digital Asset (Switzerland) GmbH
     license: Apache-2.0
     tags: [ integration ]
     icon_file: slack-icon.svg
+    source_url: https://github.com/digital-asset/daml-dit-integration-slack
 integration_types:
     - id: com.projectdabl.integrations.slack_receive_dm
       name: Slack Receive Direct Message
