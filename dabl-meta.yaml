@@ -14,8 +14,8 @@ catalog:
     source_url: https://github.com/digital-asset/daml-dit-integration-slack
 integration_types:
     - id: com.projectdabl.integrations.slack_integration
-      name: Slack Integration
-      description: Allows outbound messages recorded on a ledger to be sent to Slack, and direct messages sent to a Slack application to be recorded on a ledger.
+      name: Slack Send and Receive Message
+      description: Allows messages to be sent to and received from Slack.
       entrypoint: core_int.integration_slack:integration_slack_main
       env_class: core_int.integration_slack:IntegrationSlackSendMessageEnv
       runtime: python-direct
