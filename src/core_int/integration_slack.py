@@ -19,7 +19,7 @@ LOG = logging.getLogger('integration')
 
 
 @dataclass
-class IntegrationSlackSendMessageEnv(IntegrationEnvironment):
+class IntegrationSlackEnv(IntegrationEnvironment):
     slackApiToken: str
 
 

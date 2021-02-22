@@ -17,7 +17,7 @@ integration_types:
       name: Slack Send and Receive Message
       description: Allows messages to be sent to and received from Slack.
       entrypoint: core_int.integration_slack:integration_slack_main
-      env_class: core_int.integration_slack:IntegrationSlackSendMessageEnv
+      env_class: core_int.integration_slack:IntegrationSlackEnv
       runtime: python-direct
       fields:
         - id: slackApiToken
