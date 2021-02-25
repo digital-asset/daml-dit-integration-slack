@@ -1,2 +1,2 @@
-daml_dit_if==0.3.5
+daml_dit_if==0.4.0
 slackclient==2.9.2
