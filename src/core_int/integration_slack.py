@@ -30,7 +30,7 @@ def integration_slack_main(
     sc = WebClient(env.slackApiToken, run_async=True)
 
     @events.ledger.contract_created(
-        'SlackIntegration.OutboundMessage.OutboundMessage')
+        'SlackIntegration.OutboundMessage:OutboundMessage')
     async def on_contract_created(event):
         LOG.info('slack send message - created: %r', event)
 
@@ -57,7 +57,7 @@ def integration_slack_main(
             LOG.debug('Inbound Message: %r', body)
 
             return IntegrationWebhookResponse(
-                commands=[create('SlackIntegration.InboundDirectMessage.InboundDirectMessage', {
+                commands=[create('SlackIntegration.InboundDirectMessage:InboundDirectMessage', {
                     'integrationParty': env.party,
                     'slackChannel': body['event']['channel'],
                     'slackUser': body['event']['user'],
