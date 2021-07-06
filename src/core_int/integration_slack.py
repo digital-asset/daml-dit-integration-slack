@@ -7,7 +7,6 @@ from dataclasses import dataclass
 
 from dazl import create, exercise
 from dazl.model.core import ContractData
-from slack import WebClient
 
 from daml_dit_if.api import \
     getIntegrationLogger, \
@@ -17,30 +16,24 @@ from daml_dit_if.api import \
 
 from daml_dit_if.main.web import json_response
 
+from .slack_client import connect_slack_client
+
 
 LOG = getIntegrationLogger()
 
 
-@dataclass
-class IntegrationSlackEnv(IntegrationEnvironment):
-    slackApiToken: str
+def integration_slack_main(env: 'IntegrationEnvironment', events: 'IntegrationEvents'):
 
+    sc = connect_slack_client(events)
 
-def integration_slack_main(
-        env: 'IntegrationEnvironment',
-        events: 'IntegrationEvents'):
-
-    sc = WebClient(env.slackApiToken, run_async=True)
-
-    @events.ledger.contract_created(
-        'SlackIntegration.OutboundMessage:OutboundMessage')
-    async def on_contract_created(event):
+    @events.ledger.contract_created('SlackIntegration.Messages:OutboundMessage')
+    async def on_outbound_message(event):
         LOG.debug('Outbound message contract created: %r', event)
 
         channel = event.cdata['slackChannel']
         text = event.cdata['messageText']
 
-        sc.chat_postMessage(channel=channel, text=text)
+        sc().chat_postMessage(channel=channel, text=text)
 
         return [exercise(event.cid, 'Archive')]
 
@@ -63,7 +56,7 @@ def integration_slack_main(
             LOG.debug('Inbound Message: %r', body)
 
             return IntegrationWebhookResponse(
-                commands=[create(env.tid('SlackIntegration.InboundDirectMessage:InboundDirectMessage'), {
+                commands=[create(env.tid('SlackIntegration.Messages:InboundDirectMessage'), {
                     'integrationParty': env.party,
                     'slackChannel': body['event']['channel'],
                     'slackUser': body['event']['user'],
