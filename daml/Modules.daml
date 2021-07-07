@@ -3,4 +3,6 @@
 module Modules where
 
 import SlackIntegration.Configuration()
+
 import SlackIntegration.Messages()
+import SlackIntegration.Commands()

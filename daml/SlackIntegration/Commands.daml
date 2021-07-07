@@ -1,0 +1,19 @@
+
+-- Copyright (c) 2020-2021, Digital Asset (Switzerland) GmbH and/or its affiliates.
+-- SPDX-License-Identifier: Apache-2.0
+
+module SlackIntegration.Commands where
+
+
+template CommandInvocation
+  with
+    integrationParty : Party
+    command : Text
+    commandText : Text
+    responseUrl : Text
+    slackUser : Text
+    slackTeam : Text
+    slackChannel : Text
+    slackApiAppId : Text
+  where
+    signatory integrationParty
