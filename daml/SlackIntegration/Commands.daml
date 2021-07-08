@@ -5,9 +5,8 @@
 module SlackIntegration.Commands where
 
 
-template CommandInvocation
+data CommandInvocationInfo = CommandInvocationInfo
   with
-    integrationParty : Party
     receivedAt : Text
     command : Text
     commandText : Text
@@ -16,6 +15,13 @@ template CommandInvocation
     slackTeam : Text
     slackChannel : Text
     slackApiAppId : Text
+  deriving (Eq, Show)
+
+
+template CommandInvocation
+  with
+    integrationParty : Party
+    invocation : CommandInvocationInfo
   where
     signatory integrationParty
 
@@ -25,6 +31,7 @@ template CommandInvocation
                 responseText : Text
             do  
                 create CommandInvocationResponse with
+                    responseUrl = invocation.responseUrl
                     ..
 
         postconsuming RespondAndClose : ContractId CommandInvocationResponse
@@ -45,6 +52,7 @@ template CommandInvocationResponse
         controller integrationParty can
             ResponseFailed : ContractId CommandInvocationResponseFailure
                 with
+                    receivedAt : Time
                     httpStatusCode : Int
                     httpResponseBody : Text
                 do
@@ -54,6 +62,7 @@ template CommandInvocationResponse
 template CommandInvocationResponseFailure
     with
         integrationParty : Party
+        receivedAt : Time
         responseUrl : Text
         responseText : Text
         httpStatusCode : Int

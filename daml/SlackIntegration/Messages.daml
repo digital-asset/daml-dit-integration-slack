@@ -4,14 +4,18 @@
 
 module SlackIntegration.Messages where
 
-
-template InboundDirectMessage
+data InboundDirectMessageInfo = InboundDirectMessageInfo
   with
-    integrationParty : Party
     receivedAt       : Time
     slackChannel     : Text
     slackUser        : Text
     messageText      : Text
+  deriving (Eq, Show)
+
+template InboundDirectMessage
+  with
+    integrationParty : Party
+    message          : InboundDirectMessageInfo
   where
     signatory integrationParty
 
@@ -22,7 +26,8 @@ template InboundDirectMessage
             do  
                 create OutboundMessage with
                     messageText = replyMessageText
-                    ..
+                    slackChannel = message.slackChannel
+                    ..      
 
         postconsuming Reply : ContractId OutboundMessage
             with

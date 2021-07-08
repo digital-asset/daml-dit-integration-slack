@@ -81,10 +81,12 @@ def integration_slack_main(env: 'IntegrationEnvironment', events: 'IntegrationEv
             return IntegrationWebhookResponse(
                 commands=[create(env.tid('SlackIntegration.Messages:InboundDirectMessage'), {
                     'integrationParty': env.party,
-                    'receivedAt': current_time(),
-                    'slackChannel': body['event']['channel'],
-                    'slackUser': body['event']['user'],
-                    'messageText': body['event']['text'],
+                    'message': {
+                        'receivedAt': current_time(),
+                        'slackChannel': body['event']['channel'],
+                        'slackUser': body['event']['user'],
+                        'messageText': body['event']['text'],
+                    }
                 })])
 
         LOG.warn('Unhandled inbound event type from Slack: %r', body['type'])
@@ -102,14 +104,16 @@ def integration_slack_main(env: 'IntegrationEnvironment', events: 'IntegrationEv
             response=empty_success_response(),
             commands=[create(env.tid('SlackIntegration.Commands:CommandInvocation'), {
                 'integrationParty': env.party,
-                'receivedAt': current_time(),
-                'command': body.getone('command', None),
-                'commandText': body.getone('text', None),
-                'responseUrl': body.getone('response_url', None),
-                'slackUser': body.getone('user_id', None),
-                'slackTeam': body.getone('team_id', None),
-                'slackChannel': body.getone('channel_id', None),
-                'slackApiAppId': body.getone('api_app_id', None)
+                'invocation': {
+                    'receivedAt': current_time(),
+                    'command': body.getone('command', None),
+                    'commandText': body.getone('text', None),
+                    'responseUrl': body.getone('response_url', None),
+                    'slackUser': body.getone('user_id', None),
+                    'slackTeam': body.getone('team_id', None),
+                    'slackChannel': body.getone('channel_id', None),
+                    'slackApiAppId': body.getone('api_app_id', None)
+                }
             })])
 
     @events.webhook.post(label='Slack Webhook Endpoint - Events and Commands')
