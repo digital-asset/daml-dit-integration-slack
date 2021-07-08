@@ -16,5 +16,6 @@ integration_types:
     - id: slack_messaging
       name: Slack Messaging and Commands
       description: Sends and receives messages and slash commands.
+      instance_template: SlackIntegration.Configuration:Configuration
       entrypoint: core_int.integration_slack:integration_slack_main
       fields: []
