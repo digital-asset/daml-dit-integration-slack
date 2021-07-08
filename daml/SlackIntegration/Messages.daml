@@ -8,12 +8,28 @@ module SlackIntegration.Messages where
 template InboundDirectMessage
   with
     integrationParty : Party
+    receivedAt       : Time
     slackChannel     : Text
     slackUser        : Text
     messageText      : Text
   where
     signatory integrationParty
 
+    controller integrationParty can
+        nonconsuming ReplyNonconsuming : ContractId OutboundMessage
+            with 
+                replyMessageText : Text
+            do  
+                create OutboundMessage with
+                    messageText = replyMessageText
+                    ..
+
+        postconsuming Reply : ContractId OutboundMessage
+            with
+                replyMessageText : Text
+            do
+                exercise self ReplyNonconsuming with
+                    ..
 
 template OutboundMessage
   with
@@ -37,11 +53,9 @@ template OutboundMessageChannel
     maintainer key._1
 
     controller sender can
-        nonconsuming OutboundMessageChannel_SendMessage : ContractId OutboundMessage
+        nonconsuming SendMessage : ContractId OutboundMessage
             with
                messageText: Text
             do
               create OutboundMessage with
-                integrationParty
-                slackChannel
-                messageText
+                  ..
