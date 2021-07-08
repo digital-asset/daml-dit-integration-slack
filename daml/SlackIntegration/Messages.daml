@@ -1,0 +1,66 @@
+
+-- Copyright (c) 2020-2021, Digital Asset (Switzerland) GmbH and/or its affiliates.
+-- SPDX-License-Identifier: Apache-2.0
+
+module SlackIntegration.Messages where
+
+data InboundDirectMessageInfo = InboundDirectMessageInfo
+  with
+    receivedAt       : Time
+    slackChannel     : Text
+    slackUser        : Text
+    messageText      : Text
+  deriving (Eq, Show)
+
+template InboundDirectMessage
+  with
+    integrationParty : Party
+    message          : InboundDirectMessageInfo
+  where
+    signatory integrationParty
+
+    controller integrationParty can
+        nonconsuming ReplyNonconsuming : ContractId OutboundMessage
+            with 
+                replyMessageText : Text
+            do  
+                create OutboundMessage with
+                    messageText = replyMessageText
+                    slackChannel = message.slackChannel
+                    ..      
+
+        postconsuming Reply : ContractId OutboundMessage
+            with
+                replyMessageText : Text
+            do
+                exercise self ReplyNonconsuming with
+                    ..
+
+template OutboundMessage
+  with
+    integrationParty : Party
+    slackChannel     : Text
+    messageText      : Text
+  where
+    signatory integrationParty
+
+
+template OutboundMessageChannel
+  with
+    integrationParty : Party
+    sender           : Party
+    channelName      : Text
+    slackChannel     : Text
+  where
+    signatory integrationParty
+
+    key (integrationParty, channelName) : (Party, Text)
+    maintainer key._1
+
+    controller sender can
+        nonconsuming SendMessage : ContractId OutboundMessage
+            with
+               messageText: Text
+            do
+              create OutboundMessage with
+                  ..

@@ -1,0 +1,11 @@
+module SlackIntegration.Configuration where
+
+template Configuration
+  with
+    integrationParty : Party
+    slackApiToken    : Text
+  where
+    signatory integrationParty
+
+    key integrationParty : Party
+    maintainer key

@@ -1,20 +1,21 @@
-DIT_NAME=$(shell ddit targetname)
+dit_name := $(shell ddit targetname)
 
-PKG_FILES=$(shell find pkg -type f)
-SRC_FILES=$(shell find src -type f)
+pkg_files := $(shell find pkg -type f)
+src_files := $(shell find src -type f)
 
 .PHONY: clean
 
-all: ${DIT_NAME}
+all: ${dit_name}
 
 # This makefile depends on 'ddit' which can be installed
 # with 'pip3 install daml-dit-ddit'
 
-publish: ${DIT_NAME}
+publish: ${dit_name}
 	ddit release
 
-${DIT_NAME}: dabl-meta.yaml Makefile ${PKG_FILES} ${SRC_FILES} requirements.txt
+${dit_name}: dabl-meta.yaml Makefile ${pkg_files} ${src_files} requirements.txt
 	ddit build --force --integration
 
 clean:
-	rm -fr ${DIT_NAME} .daml dist *~ pkg/*~
+	ddit clean
+	rm -fr ${dit_name} .daml dist *~ pkg/*~

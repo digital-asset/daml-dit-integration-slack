@@ -2,5 +2,7 @@
 -- SPDX-License-Identifier: Apache-2.0
 module Modules where
 
-import SlackIntegration.OutboundMessage()
-import SlackIntegration.InboundDirectMessage()
+import SlackIntegration.Configuration()
+
+import SlackIntegration.Messages()
+import SlackIntegration.Commands()
