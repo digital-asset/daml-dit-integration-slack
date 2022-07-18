@@ -4,7 +4,7 @@
 catalog:
     name: dabl-integration-slack
     group_id: com.digitalasset
-    version: 1.0.0
+    version: 1.0.1
     short_description: Slack
     description: Slack Messaging and Commands.
     author: Digital Asset (Switzerland) GmbH
