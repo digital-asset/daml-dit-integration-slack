@@ -1,14 +1,11 @@
-# Copyright (c) 2020, Digital Asset (Switzerland) GmbH and/or its affiliates.
+# Copyright (c) 2020-2023, Digital Asset (Switzerland) GmbH and/or its affiliates.
 # SPDX-License-Identifier: Apache-2.0
 
 import datetime
 
-from dataclasses import dataclass
+from aiohttp import ClientSession, web
 
-from aiohttp import ClientSession
-
-from dazl import create, exercise
-from dazl.model.core import ContractData
+from dazl.ledger import CreateCommand, ExerciseCommand
 
 from daml_dit_if.api import \
     empty_success_response, \
@@ -41,7 +38,7 @@ def integration_slack_main(env: 'IntegrationEnvironment', events: 'IntegrationEv
 
         sc().chat_postMessage(channel=channel, text=text)
 
-        return [exercise(event.cid, 'Archive')]
+        return [ExerciseCommand(event.cid, 'Archive')]
 
     @events.ledger.contract_created('SlackIntegration.Commands:CommandInvocationResponse')
     async def on_command_response(event):
@@ -53,9 +50,9 @@ def integration_slack_main(env: 'IntegrationEnvironment', events: 'IntegrationEv
             }) as resp:
 
                 if resp.status == 200:
-                    return [exercise(event.cid, 'Archive')]
+                    return [ExerciseCommand(event.cid, 'Archive')]
                 else:
-                    return [exercise(event.cid, 'ResponseFailed', {
+                    return [ExerciseCommand(event.cid, 'ResponseFailed', {
                         'receivedAt': current_time(),
                         'httpStatusCode': resp.status,
                         'httpResponseBody': await resp.text()
@@ -79,7 +76,7 @@ def integration_slack_main(env: 'IntegrationEnvironment', events: 'IntegrationEv
             LOG.debug('Inbound Message: %r', body)
 
             return IntegrationWebhookResponse(
-                commands=[create(env.tid('SlackIntegration.Messages:InboundDirectMessage'), {
+                commands=[CreateCommand(env.tid('SlackIntegration.Messages:InboundDirectMessage'), {
                     'integrationParty': env.party,
                     'message': {
                         'receivedAt': current_time(),
@@ -102,7 +99,7 @@ def integration_slack_main(env: 'IntegrationEnvironment', events: 'IntegrationEv
 
         return IntegrationWebhookResponse(
             response=empty_success_response(),
-            commands=[create(env.tid('SlackIntegration.Commands:CommandInvocation'), {
+            commands=[CreateCommand(env.tid('SlackIntegration.Commands:CommandInvocation'), {
                 'integrationParty': env.party,
                 'invocation': {
                     'receivedAt': current_time(),

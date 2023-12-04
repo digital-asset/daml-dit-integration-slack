@@ -1,5 +1,4 @@
-
--- Copyright (c) 2020-2021, Digital Asset (Switzerland) GmbH and/or its affiliates.
+-- Copyright (c) 2020-2023, Digital Asset (Switzerland) GmbH and/or its affiliates.
 -- SPDX-License-Identifier: Apache-2.0
 
 module SlackIntegration.Commands where
@@ -25,54 +24,51 @@ template CommandInvocation
   where
     signatory integrationParty
 
-    controller integrationParty can
-        nonconsuming Respond : ContractId CommandInvocationResponse
-            with 
-                responseText : Text
-            do  
-                create CommandInvocationResponse with
-                    responseUrl = invocation.responseUrl
-                    ..
+    nonconsuming choice Respond : ContractId CommandInvocationResponse
+      with
+        responseText : Text
+      controller integrationParty
+        do
+          create CommandInvocationResponse with
+            responseUrl = invocation.responseUrl
+            ..
 
-        postconsuming RespondAndClose : ContractId CommandInvocationResponse
-            with
-                responseText : Text
-            do
-                exercise self Respond with
-                    ..
+    postconsuming choice RespondAndClose : ContractId CommandInvocationResponse
+      with
+        responseText : Text
+      controller integrationParty
+        do
+          exercise self Respond with ..
 
 template CommandInvocationResponse
-    with
-        integrationParty : Party
-        responseUrl : Text
-        responseText : Text
-    where
-        signatory integrationParty
+  with
+    integrationParty : Party
+    responseUrl : Text
+    responseText : Text
+  where
+    signatory integrationParty
 
-        controller integrationParty can
-            ResponseFailed : ContractId CommandInvocationResponseFailure
-                with
-                    receivedAt : Time
-                    httpStatusCode : Int
-                    httpResponseBody : Text
-                do
-                    create CommandInvocationResponseFailure with
-                        ..
-
-template CommandInvocationResponseFailure
-    with
-        integrationParty : Party
+    choice ResponseFailed : ContractId CommandInvocationResponseFailure
+      with
         receivedAt : Time
-        responseUrl : Text
-        responseText : Text
         httpStatusCode : Int
         httpResponseBody : Text
-    where
-        signatory integrationParty       
+      controller integrationParty
+        do
+          create CommandInvocationResponseFailure with ..
 
-        controller integrationParty can
-            Retry : ContractId CommandInvocationResponse
-                with
-                do
-                    create CommandInvocationResponse with
-                        ..
+template CommandInvocationResponseFailure
+  with
+    integrationParty : Party
+    receivedAt : Time
+    responseUrl : Text
+    responseText : Text
+    httpStatusCode : Int
+    httpResponseBody : Text
+  where
+    signatory integrationParty
+
+    choice Retry : ContractId CommandInvocationResponse
+      controller integrationParty
+        do
+          create CommandInvocationResponse with ..

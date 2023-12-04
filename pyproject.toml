@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "daml-dit-integration-slack"
+version = "2.0.0"
+description = ""
+authors = ["Daml Hub Team <no-reply@digitalasset.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+daml-dit-if = "*"
+slack-client = "*"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+isort = "*"
+mypy = "*"
+pytest = "*"
+
+[tool.isort]
+add_imports = ["from __future__ import annotations"]
+profile = "black"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
